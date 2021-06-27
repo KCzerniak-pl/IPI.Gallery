@@ -1,0 +1,130 @@
+﻿@model GalleryWebApplication.Models.PhotoViewModel
+
+@{
+    ViewBag.Title = "Nowe zdjęcie";
+    ViewBag.Active = "addPhoto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="addPhoto" class="container custom-mt-6 mb-3 border bg-light">
+    <div class="row">
+        <div class="col-12">
+            <div class="border-bottom text-uppercase text-black-50 text-center mt-3 mb-4">
+                <h4>Dodaj nowe zdjęcie</h4>
+            </div>
+        </div>
+        <div class="col-md-auto col-xl-4 my-4">
+            <div class="bg-image border border-white rounded shadow-1-strong img-preview">
+                <img src="~/img/unnamed.png" alt="" class="img-scale" />
+                <div class="img-info"></div>
+            </div>
+        </div>
+        <div class="col-md-12 col-xl-8 my-4">
+            @using (Html.BeginForm("savephoto", "gallery", FormMethod.Post, new { @enctype = "multipart/form-data", @class = "row g-4" }))
+            {
+                <div class="col-12">
+                    @Html.LabelFor(x => x.PhotoFile, new { @class = "form-label text-black-50" })
+                    @Html.TextBoxFor(x => x.PhotoFile, null, new { @type = "file", @accept = "image/*", @oninput = "preview(this)", @required = "required", @class = "form-control shadow-none" })
+                    @Html.ValidationMessageFor(x => x.PhotoFile, "To pole jest wymagane", new { @class = "text-danger" })
+                </div>
+                <div class="col-12">
+                    @Html.LabelFor(x => x.Title, new { @class = "form-label text-black-50" })
+                    @Html.TextBoxFor(x => x.Title, null, new { @maxlength = "25", @class = "form-control shadow-none" })
+                </div>
+                <div class="col-12">
+                    @Html.LabelFor(x => x.Descripton, new { @class = "form-label text-black-50" })
+                    @Html.TextBoxFor(x => x.Descripton, null, new { @maxlength = "200", @class = "form-control shadow-none" })
+                </div>
+                <div class="col-12">
+                    @Html.LabelFor(x => x.Categories, new { @class = "form-label text-black-50" })
+                    @Html.DropDownListFor(x => x.Categories, ViewBag.Categories as SelectList, new { multiple = "multiple", @required = "required", @class = "form-select" })
+                    @Html.ValidationMessageFor(x => x.Categories, "To pole jest wymagane", new { @class = "text-danger" })
+                </div>
+                <div class="col-12 form-check form-switch ms-2">
+                    @Html.CheckBoxFor(x => x.Private, new { @class = "form-check-input" })
+                    @Html.LabelFor(x => x.Private, new { @class = "form-check-label text-black-50 ms-2" })
+                </div>
+                <div>
+                    @Html.Hidden("action", "save")
+                </div>
+                <div class="col-12 text-end">
+                    <button type="submit" class="btn btn-primary">Zapisz zdjęcie</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section StyleSheet{
+    <!-- Select2 css -->
+    <link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
+}
+
+@section Scripts{
+    <!-- Validation jQuery Scripts js -->
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <!-- Select2 js -->
+    <script src="~/lib/select2/js/select2.min.js"></script>
+    <script src="~/lib/select2/js/i18n/pl.min.js"></script>
+    <!-- Bootstrap Maxlength js -->
+    <script src="~/lib/bootstrap-maxlength/dist/bootstrap-maxlength.min.js"></script>
+    <script>
+        /* Create preview and data images script */
+        function preview(fileInput) {
+            var blob = (window.URL || window.webkitURL).createObjectURL(fileInput.files[0]);
+            document.getElementsByClassName("img-scale")[0].src = blob;
+
+            var tmpImg = document.createElement("img");
+            tmpImg.src = blob;
+
+            tmpImg.onload = function () {
+                var size = parseFloat(fileInput.files[0].size / 1024).toFixed(2);
+                var resolution = tmpImg.width + 'x' + tmpImg.height;
+
+                document.getElementsByClassName("img-info")[0].innerHTML = '<span class="badge me-1">' + resolution + '</span><span class="badge">' + size + ' KB</span>';
+            }
+
+            var div = document.getElementsByClassName("bg-image")[0];
+            div.setAttribute("onclick", "imgGLightbox()");
+            div.style.cssText = "cursor: pointer;";
+
+            (window.URL || window.webkitURL).revokeObjectURL(blob);
+        }
+
+        /* GlightBox script */
+        function imgGLightbox() {
+            const lightbox = GLightbox({
+                elements: [
+                    {
+                        'href': document.getElementsByClassName("img-scale")[0].src,
+                        'type': 'image'
+                    }
+                ],
+                zoomable: false
+            });
+            lightbox.open();
+        }
+
+        $(document).ready(function () {
+            /* Select2 script */
+            $(".form-select").select2({
+                multiple: true,
+                maximumSelectionLength: 4,
+                width: '100%'
+            });
+
+            /* jQuery validated script (removing message after select value) */
+            $("#PhotoFile, #Categories").on("change", function (e) {
+                $(this).valid();
+            });
+
+            /* Bootstrap Maxlength script */
+            $("input#Title, input#Descripton").maxlength({
+                alwaysShow: true,
+                warningClass: "badge bg-success",
+                limitReachedClass: "badge bg-danger",
+                placement: "top-right-inside"
+            });
+        });
+    </script>
+}

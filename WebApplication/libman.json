@@ -1,0 +1,69 @@
+{
+  "version": "1.0",
+  "defaultProvider": "jsdelivr",
+  "libraries": [
+    {
+      "provider": "cdnjs",
+      "library": "mdb-ui-kit@3.6.0",
+      "destination": "wwwroot/lib/mdb-ui-kit/",
+      "files": [
+        "mdb.min.js",
+        "mdb.min.css"
+      ]
+    },
+    {
+      "library": "glightbox@3.0.9",
+      "destination": "wwwroot/lib/glightbox/",
+      "files": [
+        "dist/css/glightbox.min.css",
+        "dist/js/glightbox.min.js"
+      ]
+    },
+    {
+      "library": "jquery@3.6.0",
+      "destination": "wwwroot/lib/jquery/",
+      "files": [
+        "dist/jquery.min.js"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "select2@4.0.13",
+      "destination": "wwwroot/lib/select2/",
+      "files": [
+        "js/select2.min.js",
+        "css/select2.min.css",
+        "js/i18n/pl.min.js"
+      ]
+    },
+    {
+      "library": "bootstrap-maxlength@1.10.1",
+      "destination": "wwwroot/lib/bootstrap-maxlength/",
+      "files": [
+        "dist/bootstrap-maxlength.min.js"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "font-awesome@5.15.3",
+      "destination": "wwwroot/lib/font-awesome/",
+      "files": [
+        "css/all.min.css"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "jquery-validate@1.19.3",
+      "destination": "wwwroot/lib/jquery-validate/",
+      "files": [
+        "jquery.validate.min.js",
+        "additional-methods.min.js"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "jquery-validation-unobtrusive@3.2.12",
+      "destination": "wwwroot/lib/jquery-validation-unobtrusive/"
+    }
+  ]
+}

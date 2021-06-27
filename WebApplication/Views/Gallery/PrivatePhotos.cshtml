@@ -1,0 +1,121 @@
+﻿@model IEnumerable<GalleryWebApplication.Models.PhotoViewModel>
+
+@{
+    ViewBag.Title = "Moja galeria";
+    ViewBag.Active = "privatePhotos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="privateGallery" class="container custom-mt-6 mb-3 border bg-light">
+    @{
+        if (Model.Count() == 0)
+        {
+            <div class="row my-4">
+                <div class="col text-center text-black-50">
+                    <div>Nie masz jeszcze żadnych dodanych zdjęć. Dodaj zdjęcie do swojej galerii i udostępnij je innym.</div>
+                    <a href="@Url.Action("addphoto", "gallery")" class="btn btn-primary mt-3">Dodaj zdjęcie</a>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="row my-4 filter-buttons">
+                <div class="col text-center">
+                    <button class="btn mt-2 mx-1 btn-sm btn-outline-info" data-filter-btn="all" autofocus="autofocus">Wszystkie</button>
+                    @{
+                        foreach (var category in ViewBag.Categories)
+                        {
+                            <button class="btn mt-2 mx-1 btn-sm btn-outline-info" data-filter-btn="@category">@category.Replace("-", " ")</button>
+                        }
+                    }
+                </div>
+            </div>
+
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-2 mb-4">
+                @foreach (var photo in Model)
+                {
+                    <div data-filter="@string.Join(" ", photo.Categories)" class="col">
+                        <div class="card border border-white h-100 shadow-1-strong">
+                            <div class="bg-image">
+                                <a href="@photo.PhotoPath" data-gallery="@System.IO.Path.GetFileNameWithoutExtension(photo.PhotoPath)" data-title="@photo.Title" data-description="@photo.Descripton" class="glightbox">
+                                    <img src="@photo.PhotoPath" alt="" class="img-scale" />
+                                    <div class="img-info">
+                                        <span class="badge">@photo.Resolution</span>
+                                        <span class="badge">@photo.Size KB</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <div class="pb-3">
+                                    @{
+                                        foreach (var category in photo.Categories)
+                                        {
+                                            <span class="badge bg-info">@category.Replace("-", " ")</span>
+                                        }
+                                        if (photo.Private)
+                                        {
+                                            <span class="badge bg-success">Prywatne</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning">Publiczne</span>
+                                        }
+                                    }
+                                </div>
+                                <h6 class="card-title fw-bold">@photo.Title</h6>
+                                <p class="card-text">@photo.Descripton</p>
+                                <div class="mt-auto">
+                                    <div class="d-flex justify-content-between mt-3">
+                                        <button type="button" onclick="imageEdit('@photo.PhotoID')" class="btn btn-primary"><i class="fas fa-edit"></i> Edytuj</button>
+                                        <button type="button" onclick="imageDelete('@photo.PhotoID')" data-mdb-toggle="modal" data-mdb-target="#deleteModal" class="btn btn-danger"><i class="fas fa-trash"></i> Usuń</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <small class="text-muted">Aktualizacja: @photo.DateTimeModify</small>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @await Html.PartialAsync("_DeleteModalPartial")
+        }
+    }
+</div>
+
+@section Scripts{
+    <script>
+        /* Redirect to edit page */
+        function imageEdit(id) {
+            var path = "/gallery/editphoto?photoid=" + id;
+            window.location.href = path;
+        }
+
+        /* Add link to remove page */
+        function imageDelete(id) {
+            var path = "/gallery/deletephoto?photoid=" + id;
+            document.getElementById("btnDeleteConfirm").href = path;
+        }
+
+        $(document).ready(function () {
+            /* GlightBox script */
+            const lightbox = GLightbox({
+                zoomable: false
+            });
+
+            /* jQuery filter script */
+            $("[data-filter-btn]").click(function () {
+                var value = $(this).attr("data-filter-btn");
+
+                if (value == "all") {
+                    $("[data-filter]").show(500);
+                }
+                else {
+                    $("[data-filter]").not("[data-filter~=" + value + "]").hide(500);
+                    $("[data-filter]").filter("[data-filter~=" + value + "]").show(500);
+                }
+            });
+        });
+    </script>
+}

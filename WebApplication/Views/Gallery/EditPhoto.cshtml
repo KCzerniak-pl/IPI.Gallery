@@ -1,0 +1,124 @@
+﻿@model GalleryWebApplication.Models.PhotoViewModel
+
+@{
+    ViewBag.Title = "Nowe zdjęcie";
+    ViewBag.Active = "editPhoto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="editPhoto" class="container custom-mt-6 mb-3 border bg-light">
+    @{
+        if (Model.PhotoID == Guid.Empty)
+        {
+            <div class="row my-4">
+                <div class="col text-center text-black-50">
+                    Zdjęcie o podanym ID nie istnieje lub nie masz uprawnień do jego edycji.
+                </div>
+            </div>
+        }
+        else
+        {
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="border-bottom text-uppercase text-black-50 text-center mt-3 mb-4">
+                        <h4>Edytuj zdjęcie</h4>
+                    </div>
+                </div>
+                <div class="col-md-auto col-xl-4 my-4">
+                    <div class="bg-image border border-white rounded shadow-1-strong img-preview">
+                        <a href="@Model.PhotoPath" class="glightbox">
+                            <img src="@Model.PhotoPath" alt="" class="img-scale" />
+                            <div class="img-info">
+                                <span class="badge">@Model.Resolution</span>
+                                <span class="badge">@Model.Size KB</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-12 col-xl-8 my-4">
+                    @using (Html.BeginForm("savephoto", "gallery", FormMethod.Post, new { @class = "row g-4" }))
+                    {
+                        <div class="col-12">
+                            @Html.LabelFor(x => x.Title, new { @class = "form-label text-black-50" })
+                            @Html.TextBoxFor(x => x.Title, null, new { @maxlength = "25", @class = "form-control shadow-none" })
+                        </div>
+                        <div class="col-12">
+                            @Html.LabelFor(x => x.Descripton, new { @class = "form-label text-black-50" })
+                            @Html.TextBoxFor(x => x.Descripton, null, new { @maxlength = "200", @class = "form-control shadow-none" })
+                        </div>
+                        <div class="col-12">
+                            @Html.LabelFor(x => x.Categories, new { @class = "form-label text-black-50" })
+                            @Html.DropDownListFor(x => x.Categories, ViewBag.Categories as SelectList, new { multiple = "multiple", @required = "required", @class = "form-select" })
+                            @Html.ValidationMessageFor(x => x.Categories, "To pole jest wymagane", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-12 form-check form-switch ms-2">
+                            @Html.CheckBoxFor(x => x.Private, new { @class = "form-check-input" })
+                            @Html.LabelFor(x => x.Private, new { @class = "form-check-label text-black-50 ms-2" })
+                        </div>
+                        <div>
+                            @Html.HiddenFor(x => x.PhotoID)
+                            @Html.Hidden("action", "edit")
+                        </div>
+                        <div class="col-12 text-end">
+                            <button onclick="goBack()" class="btn btn-primary">Anuluj</button>
+                            <button type="submit" class="btn btn-primary">Zapisz zdjęcie</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@section StyleSheet{
+    <!-- Select2 css -->
+    <link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
+}
+
+@section Scripts{
+    <!-- Validation jQuery Scripts js -->
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <!-- Select2 js -->
+    <script src="~/lib/select2/js/select2.min.js"></script>
+    <script src="~/lib/select2/js/i18n/pl.min.js"></script>
+    <!-- Bootstrap Maxlength js -->
+    <script src="~/lib/bootstrap-maxlength/dist/bootstrap-maxlength.min.js"></script>
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+
+        $(document).ready(function () {
+            /* GlightBox script */
+            const lightbox = GLightbox({
+                zoomable: false
+            });
+
+            /* Select2 script */
+            $(".form-select").select2({
+                multiple: true,
+                maximumSelectionLength: 4,
+                width: '100%'
+            });
+
+            /* jQuery validated script (removing message after select value) */
+            $("#Categories").on("change", function (e) {
+                $(this).valid();
+            });
+
+            /* Auto selected category */
+            var selectedCategories = @Json.Serialize(Model.Categories);
+            $(".form-select").val(selectedCategories);
+            $(".form-select").trigger("change");
+
+            /* Bootstrap Maxlength script */
+            $("input#Title, input#Descripton").maxlength({
+                alwaysShow: true,
+                warningClass: "badge bg-success",
+                limitReachedClass: "badge bg-danger",
+                placement: "top-right-inside"
+            });
+        });
+    </script>
+}

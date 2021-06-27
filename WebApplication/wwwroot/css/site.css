@@ -1,0 +1,226 @@
+﻿@charset "UTF-8";
+
+footer {
+    background: -moz-linear-gradient(45deg, rgba(34, 34, 34, 1), rgba(205, 83, 120, 1) 100%) !important;
+    background: -webkit-linear-gradient(45deg, rgba(34, 34, 34, 1), rgba(205, 83, 120, 1) 100%) !important;
+    background: linear-gradient(45deg, rgba(34, 34, 34, 1), rgba(205, 83, 120, 1) 100%) !important;
+}
+
+.btn {
+    text-transform: none !important;
+}
+
+a.custom-btn-rgba:hover {
+    background: rgba(0, 0, 0, 0.2)
+}
+
+
+
+/* Validation with using jQuery */
+span.field-validation-error {
+    font-size: .875rem !important;
+}
+
+span.field-validation-valid {
+    display: none !important;
+}
+
+
+/* Custom top margin */
+.custom-mt-6 {
+    margin-top: 6rem !important;
+}
+
+
+
+/* Navbar color */
+.navbar {
+    background: -moz-linear-gradient(45deg, rgba(205, 83, 120, 1), rgba(100, 83, 202, 1) 100%);
+    background: -webkit-linear-gradient(45deg, rgba(205, 83, 120, 1), rgba(100, 83, 202, 1) 100%);
+    background: linear-gradient(45deg, rgba(205, 83, 120, 11), rgba(100, 83, 202, 1) 100%);
+}
+
+
+
+/* Navbar toggler - items in menu */
+@media (max-width: 992px) {
+    #navbarNav {
+        text-align: center !important;
+    }
+}
+
+
+
+/* Logo */
+.navbar-brand {
+    margin-right: 0px !important;
+}
+
+    .navbar-brand img {
+        height: 45px;
+    }
+
+
+
+/* User display */
+.user-display {
+    display: block;
+    padding: .5rem 1rem;
+}
+
+
+
+/* Video on the main site */
+@media (min-width: 992px) {
+    #intro {
+        height: 50vh !important;
+        min-height: 325px;
+    }
+}
+
+#intro video {
+    min-width: 100%;
+    min-height: 100%;
+}
+
+#intro .mask {
+    background: -moz-linear-gradient(45deg, rgba(213, 15, 61, 0.6), rgba(13, 17, 198, 0.69) 100%);
+    background: -webkit-linear-gradient(45deg, rgba(213, 15, 61, 0.6), rgba(13, 17, 198, 0.69) 100%);
+    background: linear-gradient(45deg, rgba(213, 15, 61, 0.6), rgba(13, 17, 198, 0.69) 100%);
+    /*
+    background: -moz-linear-gradient(45deg, rgba(29, 236, 197, 0.7), rgba(91, 14, 214, 0.7) 100%);
+    background: -webkit-linear-gradient(45deg, rgba(29, 236, 197, 0.7), rgba(91, 14, 214, 0.7) 100%);
+    background: linear-gradient(45deg, rgba(29, 236, 197, 0.7), rgba(91, 14, 214, 0.7) 100%);
+    */
+}
+
+
+
+/* Scale and crop thumbnail in card */
+.img-scale {
+    object-fit: cover;
+    object-position: center;
+    width: 100%;
+    height: 150px;
+    max-height: 150px;
+}
+
+
+
+/* Thumbnail size in preview */
+.img-preview {
+    width: 250px !important;
+    max-width: 250px !important;
+    height: 150px !important;
+    max-height: 150px !important;
+}
+
+
+
+/* Mask on thumbnail in cards */
+.bg-image img {
+    -webkit-transition: .2s all;
+}
+
+.bg-image:hover img {
+    -webkit-filter: brightness(50%);
+}
+
+
+
+/* Data on the thumbnail in cards */
+.bg-image .img-info {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    z-index: 100;
+}
+
+    .bg-image .img-info span {
+        background-color: #cccccc !important;
+    }
+
+
+
+/* Buttons in filter */
+.filter-buttons button:hover, .filter-buttons button:focus {
+    color: #ffffff;
+    background-color: #69c9eb;
+}
+
+
+
+/* Bootstrap switch in addPhoto site */
+#addPhoto .form-check-input:checked[type="checkbox"],
+#addPhoto .form-check-input:checked[type="checkbox"]::after {
+    background-color: #ca537a !important;
+}
+
+
+
+/* Animated */
+.animated {
+    -webkit-animation-fill-mode: both;
+    -moz-animation-fill-mode: both;
+    -o-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation-duration: 2s;
+    -moz-animation-duration: 2s;
+    -o-animation-duration: 2s;
+    animation-duration: 2s;
+}
+
+@-webkit-keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateY(90px);
+    }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+    }
+}
+
+@-moz-keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        -moz-transform: translateY(90px);
+    }
+
+    100% {
+        opacity: 1;
+        -moz-transform: translateY(0);
+    }
+}
+
+@-o-keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        -o-transform: translateY(90px);
+    }
+
+    100% {
+        opacity: 1;
+        -o-transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(90px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animated.fade-in-ip {
+    -webkit-animation-name: fadeInUp;
+    -moz-animation-name: fadeInUp;
+    -o-animation-name: fadeInUp;
+    animation-name: fadeInUp;
+}
