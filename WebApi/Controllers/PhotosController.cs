@@ -19,6 +19,7 @@ namespace GalleryWebApi.Controllers
     [Route("apiphotos")]
     [ApiController]
     [Produces("application/json")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class PhotosController : ControllerBase
     {
         private readonly GalleryDbContext _dbContext;
@@ -59,6 +60,7 @@ namespace GalleryWebApi.Controllers
 
         // GET: apiphotos/<ValuesController>
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<PhotoDto>>> PublicPhotos()
         {
             if (_dbContext.Database.CanConnect())
