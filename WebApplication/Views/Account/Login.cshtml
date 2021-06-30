@@ -1,0 +1,71 @@
+﻿@model GalleryWebApplication.Models.LoginViewModel
+
+@{
+    ViewBag.Title = "Zaloguj się";
+    ViewBag.Active = "login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="login" class="container custom-mt-6 mb-3 border bg-light">
+    <div class="row p-5">
+        <div class="col-lg-6 d-flex text-center align-items-center p-4 shadow-1-strong background-gradient">
+            <div class="w-100 text-white">
+                <div class="mb-3">Nie masz jeszcze konta?</div>
+                <a href="@Url.Action("Registration", "account")" class="btn btn-outline-light custom-btn-rgba">Zarejestruj się</a>
+            </div>
+        </div>
+        <div class="col-lg-6 p-4 shadow-1-strong">
+            @{
+                if (ViewBag.Errors != null)
+                {
+                    foreach (var error in ViewBag.Errors)
+                    {
+                        <div class="text-danger mb-2">@error</div>
+                    }
+                }
+            }
+
+            @using (Html.BeginForm("login", "account", FormMethod.Post, new { @class = "row g-4" }))
+            {
+                <div class="col-12">
+                    @Html.LabelFor(x => x.Email, new { @class = "form-label text-black-50" })
+                    @Html.TextBoxFor(x => x.Email, null, new { @class = "form-control shadow-none" })
+                    @Html.ValidationMessageFor(x => x.Email, null, new { @class = "text-danger" })
+                </div>
+                <div class="col-12">
+                    @Html.LabelFor(x => x.Password, new { @class = "form-label text-black-50" })
+                    @Html.PasswordFor(x => x.Password, new { @class = "form-control shadow-none" })
+                    @Html.ValidationMessageFor(x => x.Password, null, new { @class = "text-danger" })
+                </div>
+                <div class="col-12">
+                    @Html.CheckBoxFor(x => x.RemeberMe, new { @class = "form-check-input shadow-none" })
+                    @Html.LabelFor(x => x.RemeberMe, new { @class = "form-check-label text-black-50" })
+                </div>
+                <div>
+                    @Html.Hidden("returnUrl", (string)ViewBag.myDate)
+                </div>
+                <div class="col-12 text-end">
+                    <button type="submit" class="btn btn-primary">Zaloguj się</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <!-- Validation jQuery Scripts js -->
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <!-- Bootstrap Maxlength js -->
+    <script src="~/lib/bootstrap-maxlength/dist/bootstrap-maxlength.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            /* Bootstrap Maxlength script */
+            $("input#Password").maxlength({
+                alwaysShow: true,
+                warningClass: "badge bg-success",
+                limitReachedClass: "badge bg-danger",
+                placement: "top-right-inside"
+            });
+        });
+    </script>
+}

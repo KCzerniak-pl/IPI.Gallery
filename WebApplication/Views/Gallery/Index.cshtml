@@ -1,5 +1,9 @@
 ﻿@model IEnumerable<GalleryWebApplication.Models.PhotoViewModel>
 
+@using GalleryWebApplication.Helpers;
+@inject SessionHelper sessionHelper;
+@{ bool authorization = sessionHelper.GetObjectFromJson<bool>(Context, "Authorization"); }
+
 @{
     ViewBag.Title = "Strona główna";
     ViewBag.Active = "home";
@@ -17,7 +21,14 @@
             <div class="text-white animated fade-in-ip">
                 <h1 class="mb-3">Galeria zdjęć</h1>
                 <h5 class="mb-4">Projekt zaliczeniowy</h5>
-                <a href="@Url.Action("addphoto", "gallery")" class="btn btn-outline-light custom-btn-rgba btn-lg m-2">Dodaj zdjęcie</a>
+                @if (authorization)
+                {
+                    <a href="@Url.Action("addphoto", "gallery")" class="btn btn-outline-light custom-btn-rgba btn-lg m-2">Dodaj zdjęcie</a>
+                }
+                else
+                {
+                    <a href="@Url.Action("login", "account")" class="btn btn-outline-light custom-btn-rgba btn-lg m-2">Zaloguj się</a>
+                }
             </div>
         </div>
     </div>

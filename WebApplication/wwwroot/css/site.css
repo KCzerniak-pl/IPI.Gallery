@@ -224,3 +224,14 @@ span.field-validation-valid {
     -o-animation-name: fadeInUp;
     animation-name: fadeInUp;
 }
+
+
+
+/* Other */
+#login .background-gradient {
+    background: linear-gradient(45deg, rgba(213, 15, 61, 0.6), rgba(13, 17, 198, 0.69) 100%);
+}
+
+#registration .background-gradient {
+    background: linear-gradient(135deg, rgba(213, 15, 61, 0.6), rgba(13, 17, 198, 0.69) 100%);
+}

@@ -32,10 +32,13 @@ namespace GalleryWebApplication.Services
 
 
         // Pobranie przez serwis informacji o wszystkich zdjęciach dla wybranego użytkownika.
-        public async Task<PhotoViewModel[]> GetPhotosForUserAsync(Guid userID)
+        public async Task<PhotoViewModel[]> GetPhotosForUserAsync(Guid userID, string jwt)
         {
             using (HttpClient httpClient = new HttpClient())
             {
+                // Dodanie JWT do nagłówka żądania.
+                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", jwt);
+
                 // Korzystamy z klienta, który został wygenerowany z wykorzystaniem narzędzia NSwagStudio.
                 GalleryWebApiClient apiClient = new GalleryWebApiClient(_url, httpClient);
 
@@ -50,10 +53,13 @@ namespace GalleryWebApplication.Services
 
 
         // Pobranie przez serwis informacji o wybranym zdjęciu.
-        public async Task<PhotoViewModel> GetPhotoForUserAsync(Guid photoID, Guid userID)
+        public async Task<PhotoViewModel> GetPhotoForUserAsync(Guid photoID, Guid userID, string jwt)
         {
             using (HttpClient httpClient = new HttpClient())
             {
+                // Dodanie JWT do nagłówka żądania.
+                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", jwt);
+
                 // Korzystamy z klienta, który został wygenerowany z wykorzystaniem narzędzia NSwagStudio.
                 GalleryWebApiClient apiClient = new GalleryWebApiClient(_url, httpClient);
 
@@ -68,10 +74,13 @@ namespace GalleryWebApplication.Services
 
 
         // Dodanie przez serwis nowego zdjęcia.
-        public async Task AddPhotoAsync(PhotoViewModel newPhoto)
+        public async Task AddPhotoAsync(PhotoViewModel newPhoto, string jwt)
         {
             using (HttpClient httpClient = new HttpClient())
             {
+                // Dodanie JWT do nagłówka żądania.
+                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", jwt);
+
                 // Korzystamy z klienta, który został wygenerowany z wykorzystaniem narzędzia NSwagStudio.
                 GalleryWebApiClient apiClient = new GalleryWebApiClient(_url, httpClient);
 
@@ -83,10 +92,13 @@ namespace GalleryWebApplication.Services
 
 
         // Aktualizacja przez serwis wybranego zdjęcia.
-        public async Task EditPhotoAsync(PhotoViewModel editPhoto)
+        public async Task EditPhotoAsync(PhotoViewModel editPhoto, string jwt)
         {
             using (HttpClient httpClient = new HttpClient())
             {
+                // Dodanie JWT do nagłówka żądania.
+                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", jwt);
+
                 // Korzystamy z klienta, który został wygenerowany z wykorzystaniem narzędzia NSwagStudio.
                 GalleryWebApiClient apiClient = new GalleryWebApiClient(_url, httpClient);
 
@@ -98,10 +110,13 @@ namespace GalleryWebApplication.Services
 
 
         // Usunięcie przez serwis wybranego zdjęcia
-        public async Task DeletePhotoAsync(Guid photoID, Guid userID)
+        public async Task DeletePhotoAsync(Guid photoID, Guid userID, string jwt)
         {
             using (HttpClient httpClient = new HttpClient())
             {
+                // Dodanie JWT do nagłówka żądania.
+                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", jwt);
+
                 // Korzystamy z klienta, który został wygenerowany z wykorzystaniem narzędzia NSwagStudio.
                 GalleryWebApiClient apiClient = new GalleryWebApiClient(_url, httpClient);
 

@@ -25,6 +25,29 @@ namespace GalleryWebApplication
             // Dependency injection - Inverse of Control. Mapowanie interfejsu IGalleryService na obiekt GalleryService.
             services.AddTransient<IPhotosService, PhotosService>();
 
+            // Dependency injection - Inverse of Control. Mapowanie interfejsu IAccountService na obiekt AccountService.
+            services.AddTransient<IAccountService, AccountService>();
+
+            // Dependency injection - Inverse of Control.
+            services.AddTransient<SessionHelper>();
+
+            // Sesja.
+            services.AddSession(opt =>
+            {
+                // Nazwa cookies dla sesji.
+                opt.Cookie.Name = string.Format(".Gallery.Session.{0}", Regex.Replace(Convert.ToBase64String(Guid.NewGuid().ToByteArray()), "[/+=]", ""));
+
+                // Po jakim czasie sesja zotanie wyczyszczona. Ka¿dy dostêp do sesji resetuje limit czasu.
+                opt.IdleTimeout = TimeSpan.FromMinutes(25);
+            });
+
+            // Token AddAntiforgery dla formularzy.
+            services.AddAntiforgery(opt =>
+            {
+                // Nazwa cookies dla sesji.
+                opt.Cookie.Name = string.Format(".Gallery.Antiforgery.{0}", Regex.Replace(Convert.ToBase64String(Guid.NewGuid().ToByteArray()), "[/+=]", ""));
+            });
+
             services.AddControllers(options =>
             {
                 var noContentFormatter = options.OutputFormatters.OfType<HttpNoContentOutputFormatter>().FirstOrDefault();
@@ -51,6 +74,8 @@ namespace GalleryWebApplication
             app.UseHttpsRedirection();
 
             app.UseStaticFiles();
+
+            app.UseSession();
 
             app.UseRouting();
 

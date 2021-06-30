@@ -1,0 +1,79 @@
+﻿@model GalleryWebApplication.Models.RegistrationViewModel
+
+@{
+    ViewBag.Title = "Zaloguj się";
+    ViewBag.Active = "login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="registration" class="container custom-mt-6 mb-3 border bg-light">
+    <div class="row p-5">
+        <div class="col-lg-6 p-4 shadow-1-strong">
+            @{
+                if (ViewBag.Errors != null)
+                {
+                    foreach (var error in ViewBag.Errors)
+                    {
+                        <div class="text-danger mb-2">@error</div>
+                    }
+                }
+            }
+
+            @using (Html.BeginForm("registration", "account", FormMethod.Post, new { @class = "row g-4" }))
+            {
+                <div class="col-md-6">
+                    @Html.LabelFor(x => x.FirstName, new { @class = "form-label text-black-50" })
+                    @Html.TextBoxFor(x => x.FirstName, null, new { @class = "form-control shadow-none" })
+                    @Html.ValidationMessageFor(x => x.FirstName, null, new { @class = "text-danger" })
+                </div>
+                <div class="col-md-6">
+                    @Html.LabelFor(x => x.LastName, new { @class = "form-label text-black-50" })
+                    @Html.TextBoxFor(x => x.LastName, null, new { @class = "form-control shadow-none" })
+                    @Html.ValidationMessageFor(x => x.LastName, null, new { @class = "text-danger" })
+                </div>
+                <div class="col-12">
+                    @Html.LabelFor(x => x.Email, new { @class = "form-label text-black-50" })
+                    @Html.TextBoxFor(x => x.Email, null, new { @class = "form-control shadow-none" })
+                    @Html.ValidationMessageFor(x => x.Email, null, new { @class = "text-danger" })
+                </div>
+                <div class="col-12">
+                    @Html.LabelFor(x => x.Password, new { @class = "form-label text-black-50" })
+                    @Html.PasswordFor(x => x.Password, new { @class = "form-control shadow-none" })
+                    @Html.ValidationMessageFor(x => x.Password, null, new { @class = "text-danger" })
+                </div>
+                <div class="col-12">
+                    @Html.LabelFor(x => x.ConfirmPassword, new { @class = "form-label text-black-50" })
+                    @Html.PasswordFor(x => x.ConfirmPassword, new { @class = "form-control shadow-none" })
+                    @Html.ValidationMessageFor(x => x.ConfirmPassword, null, new { @class = "text-danger" })
+                </div>
+                <div class="col-12 text-end">
+                    <button type="submit" class="btn btn-primary">Utwórz konto</button>
+                </div>
+            }
+        </div>
+        <div class="col-lg-6 d-flex text-center align-items-center p-4 shadow-1-strong background-gradient">
+            <div class="w-100 text-white">
+                <div class="mb-3">Masz już konto?</div>
+                <a href="@Url.Action("login", "account")" class="btn btn-outline-light custom-btn-rgba">Zaloguj się</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <!-- Validation jQuery Scripts js -->
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <!-- Bootstrap Maxlength js -->
+    <script src="~/lib/bootstrap-maxlength/dist/bootstrap-maxlength.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            /* Bootstrap Maxlength script */
+            $("input#FirstName, input#LastName, input#Password, input#ConfirmPassword").maxlength({
+                alwaysShow: true,
+                warningClass: "badge bg-success",
+                limitReachedClass: "badge bg-danger",
+                placement: "top-right-inside"
+            });
+        });
+    </script>
+}

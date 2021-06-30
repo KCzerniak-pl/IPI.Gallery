@@ -13,13 +13,15 @@ namespace GalleryWebApplication.Controllers
     public class GalleryController : Controller
     {
         private readonly IPhotosService _photosService;
+        private readonly SessionHelper _sessionHelper;
 
         // Dependency Injection (Wstrzykiwanie zależności) przez konstruktor.
         // Zostaje wstrzyknięta usługa z PhotosService. Dzięki temu kontroler może korzystać z połączenia przez WebApi i nie musi sam go tworzyć.
         // Do prawidłowego działania wymagana jest konfiguracja Inverse of Control w pliku Startup.cs.
-        public GalleryController(IPhotosService photosService)
+        public GalleryController(IPhotosService photosService, SessionHelper sessionHelper)
         {
             _photosService = photosService;
+            _sessionHelper = sessionHelper;
         }
 
 
@@ -47,11 +49,21 @@ namespace GalleryWebApplication.Controllers
         [HttpGet]
         public async Task<IActionResult> PrivatePhotos()
         {
-            // Pobranie userID.
-            Guid userID = Guid.Parse("46ED045F-BE63-495A-BEF6-F04B17BA3651");
+            // Sprawdzenie autoryzacji do strony.
+            if (!CheckAuthorization())
+            {
+                // W przypadku braku dostępu przekierowanie do strony logowania (z parametrem powrotu do PrivatePhotos).
+                return RedirectToAction(nameof(AccountController.Login), "Account", new { returnUrl = Url.Action(nameof(PrivatePhotos), "Gallery") });
+            }
+
+            // Pobranie JWT zapisanego w sesji.
+            string jwt = _sessionHelper.GetObjectFromJson<string>(HttpContext, "JWToken");
+
+            // Pobranie userID zapisanego w JWT.
+            Guid userID = _sessionHelper.GetObjectFromJwt<Guid>(jwt, "Id");
 
             // Pobranie informacji o zdjęciach dla wybranego użytkownika (z wykorzystaniem usługi z PhotosService).
-            PhotoViewModel[] photos = await _photosService.GetPhotosForUserAsync(userID);
+            PhotoViewModel[] photos = await _photosService.GetPhotosForUserAsync(userID, jwt);
 
             // Inicjalizacja obiektu z modelem danych i przypisanie pobranych informacji.
             PhotosViewModel galleryViewModel = new PhotosViewModel() { Photos = photos };
@@ -70,6 +82,13 @@ namespace GalleryWebApplication.Controllers
         [HttpGet]
         public async Task<IActionResult> AddPhoto()
         {
+            // Sprawdzenie autoryzacji do strony.
+            if (!CheckAuthorization())
+            {
+                // W przypadku braku dostępu przekierowanie do strony logowania (z parametrem powrotu do AddPhoto).
+                return RedirectToAction(nameof(AccountController.Login), "Account", new { returnUrl = Url.Action(nameof(AddPhoto), "Gallery") });
+            }
+
             // Pobranie informacji o dostępnych kategoriach (z wykorzystaniem usługi z PhotosService).
             GetCategoriesDto categoriesDTO = await _photosService.GetCategoriesAsync();
 
@@ -86,11 +105,21 @@ namespace GalleryWebApplication.Controllers
         [HttpGet]
         public async Task<IActionResult> EditPhoto(Guid photoID)
         {
-            // Pobranie userID.
-            Guid userID = Guid.Parse("46ED045F-BE63-495A-BEF6-F04B17BA3651");
+            // Sprawdzenie autoryzacji do strony.
+            if (!CheckAuthorization())
+            {
+                // W przypadku braku dostępu przekierowanie do strony logowania (z parametrem powrotu do PrivatePhotos).
+                return RedirectToAction(nameof(AccountController.Login), "Account", new { returnUrl = Url.Action(nameof(PrivatePhotos), "Gallery") });
+            }
+
+            // Pobranie JWT zapisanego w sesji. 
+            string jwt = _sessionHelper.GetObjectFromJson<string>(HttpContext, "JWToken");
+
+            // Pobranie userID zapisanego w JWT.
+            Guid userID = _sessionHelper.GetObjectFromJwt<Guid>(jwt, "Id");
 
             // Pobranie informacji o zdjęciach dla wybranego użytkownika (z wykorzystaniem usługi z PhotosService).
-            PhotoViewModel photo = await _photosService.GetPhotoForUserAsync(photoID, userID);
+            PhotoViewModel photo = await _photosService.GetPhotoForUserAsync(photoID, userID, jwt);
 
             photo.Private = !photo.Private;
 
@@ -112,17 +141,27 @@ namespace GalleryWebApplication.Controllers
         [TypeFilter(typeof(ValidateAntiForgeryTokenFailed))] // Filtr wykonany w przypadku błędnego tokena zabezpieczającego formularz.
         public async Task<IActionResult> SavePhoto(PhotoViewModel photo, string action)
         {
+            // Sprawdzenie autoryzacji do strony.
+            if (!CheckAuthorization())
+            {
+                // W przypadku braku dostępu przekierowanie do strony logowania (z parametrem powrotu do PrivatePhotos).
+                return RedirectToAction(nameof(AccountController.Login), "Account", new { returnUrl = Url.Action(nameof(PrivatePhotos), "Gallery") });
+            }
+
             if (ModelState.IsValid)
             {
-                // Pobranie userID.
-                photo.UserID = Guid.Parse("46ED045F-BE63-495A-BEF6-F04B17BA3651");
+                // Pobranie JWT zapisanego w sesji. 
+                string jwt = _sessionHelper.GetObjectFromJson<string>(HttpContext, "JWToken");
+
+                // Pobranie userID zapisanego w JWT.
+                photo.UserID = _sessionHelper.GetObjectFromJwt<Guid>(jwt, "Id");
 
                 // Odwrócenie wartości publiczne/prywatne pobranej z formularza.
                 photo.Private = !photo.Private;
 
                 // Dodanie nowego lub edycja już istniejącego zdjęcia (z wykorzystaniem usługi z PhotosService).
-                if (action == "save") { await _photosService.AddPhotoAsync(photo); }
-                else if (action == "edit") { await _photosService.EditPhotoAsync(photo); }
+                if (action == "save") { await _photosService.AddPhotoAsync(photo, jwt); }
+                else if (action == "edit") { await _photosService.EditPhotoAsync(photo, jwt); }
             }
 
             return RedirectToAction(nameof(PrivatePhotos));
@@ -133,11 +172,21 @@ namespace GalleryWebApplication.Controllers
         [HttpGet]
         public async Task<IActionResult> DeletePhoto(Guid photoID)
         {
-            // Pobranie userID.
-            Guid userID = Guid.Parse("46ED045F-BE63-495A-BEF6-F04B17BA3651");
+            // Sprawdzenie autoryzacji do strony. 
+            if (!CheckAuthorization())
+            {
+                // W przypadku braku dostępu przekierowanie do strony logowania (z parametrem powrotu do PrivatePhotos).
+                return RedirectToAction(nameof(AccountController.Login), "Account", new { returnUrl = Url.Action(nameof(PrivatePhotos), "Gallery") });
+            }
+
+            // Pobranie JWT zapisanego w sesji. 
+            string jwt = _sessionHelper.GetObjectFromJson<string>(HttpContext, "JWToken");
+
+            // Pobranie userID zapisanego w JWT.
+            Guid userID = _sessionHelper.GetObjectFromJwt<Guid>(jwt, "Id");
 
             // Usunięcie informacji o wybranym zdjęciu (z wykorzystaniem usługi z PhotosService).
-            await _photosService.DeletePhotoAsync(photoID, userID);
+            await _photosService.DeletePhotoAsync(photoID, userID, jwt);
 
             return RedirectToAction(nameof(PrivatePhotos));
         }
@@ -157,6 +206,15 @@ namespace GalleryWebApplication.Controllers
         public IActionResult Error()
         {
             return View();
+        }
+
+
+
+        public bool CheckAuthorization()
+        {
+            // Pobranie informacji zapisanych w sesji. 
+            // Jeżeli w sesji nie ma klucza "Authorization" zostanie zwrócone "false".
+            return _sessionHelper.GetObjectFromJson<bool>(HttpContext, "Authorization");
         }
     }
 }
